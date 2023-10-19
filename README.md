@@ -8,4 +8,4 @@ Programming Samples
 1. `python3 CODE_FILE.py` where CODE_FILE.py is a file with python code
 
 ## Download and run code from this repo in it's own container
-1. TBD
+1. `docker run --rm -it ghcr.io/andylytical/programming_samples:latest`
