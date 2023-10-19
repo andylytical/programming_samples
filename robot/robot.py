@@ -83,7 +83,7 @@ def can_add_part( part_num, robot ):
     return rv
 
 
-def is_robot_complete( robot, allowed, show=False ):
+def is_robot_complete( robot, allowed, debug=False ):
     ''' Check if the robot is complete
         by comparing the actual part counts to the required parts counts.
         Return true if part counts match, False otherwise.
@@ -92,10 +92,10 @@ def is_robot_complete( robot, allowed, show=False ):
     for i in ( 1, 2, 3, 4, 5, 6, 7 ):
         if robot[i] != allowed[i]:
             rv = False
-            if show:
+            if debug:
                 print( f"(COMPLETE?) mismatch on index {i}" )
             break
-    if show:
+    if debug:
         print( f"(COMPLETE?) {robot}" )
         print( f"(COMPLETE?) {allowed}" )
     return rv
@@ -118,11 +118,8 @@ def mk_robot():
             print( f"Added index {new_part} = {part_names[new_part]}!")
             print( f"Robot is now {robot}" )
             print( f"Rolls so far: {roll_count}" )
-            robot_completed = is_robot_complete( robot, part_count_max )
             print()
-        # else:
-        #     print( f"Nope, can't add {part_names[new_part]}." )
-        # print( f"Rolls so far: {roll_count}" )
+            robot_completed = is_robot_complete( robot, part_count_max )
         if roll_count > 1000:
             raise SystemExit( 'Too many rolls, safety check' )
     print( f"Finally, a completed robot. Only took {roll_count} rolls." )
