@@ -59,28 +59,25 @@ def can_add_part( part_num, robot ):
     # First test for every part will always be if max_allowed has been reached yet
     if part_count < max_allowed:
         # Now check part type for any additional rules
-        if part_num == 1:
-            # Wheel
-            # no dependencies
-            rv = True
-        elif part_num == 2:
+        if part_num == 2:
             # Axle
             # must be a free wheel (ie: more wheels than axles)
-            num_wheels = robot[1]
-            if num_wheels > part_count:
+            dep_index = 1
+            dep_qty = robot[dep_index]
+            if dep_qty > part_count:
                 rv = True
         else:
             # all the other parts have the same rules,
             # dependant part must be at max qty
-            depends_on = 3 # Plunger (4) Head (5) Power cell (7)
-            if part_num == 3: 
-                # Torso
-                depends_on = 2
-            elif part_num == 6:
-                # Antenna
-                depends_on = 5
-            dep_qty = robot[depends_on]
-            dep_required = part_count_max[depends_on]
+            dep_index = 3 # Plunger (4) Head (5) Power cell (7)
+            if part_num == 1: # Wheel
+                dep_index = 0
+            elif part_num == 3: # Torso
+                dep_index = 2
+            elif part_num == 6: # Antenna
+                dep_index = 5
+            dep_qty = robot[dep_index]
+            dep_required = part_count_max[dep_index]
             if dep_qty == dep_required:
                 rv = True
     return rv
