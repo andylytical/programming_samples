@@ -61,35 +61,32 @@ def can_add_part( part_num, robot ):
         # Now check part type for any additional rules
         if part_num == 1:
             # Wheel
-            # no dependencies
-            rv = True
+            # PERFORM CHECKS, IF THEY PASS, THEN
+                # rv = True
         elif part_num == 2:
             # Axle
-            # must be a free wheel (ie: more wheels than axles)
-            num_wheels = robot[1]
-            if num_wheels > part_count:
-                rv = True
+            # PERFORM CHECKS, IF THEY PASS, THEN
+                # rv = True
         elif part_num == 3:
             # Torso
-            # can be added once all axles are present
-            num_axles = robot[2]
-            req_axles = part_count_max[2]
-            if num_axles == req_axles:
-                rv = True
-        elif part_num == 4 or part_num == 5 or part_num == 7:
+            # PERFORM CHECKS, IF THEY PASS, THEN
+                # rv = True
+        elif part_num == 4:
             # Plunger (4)
+            # PERFORM CHECKS, IF THEY PASS, THEN
+                # rv = True
+        elif part_num == 5:
             # Head (5)
-            # Power cell (7)
-            # depends on torso
-            torso_qty = robot[3]
-            if torso_qty > 0:
-                rv = True
+            # PERFORM CHECKS, IF THEY PASS, THEN
+                # rv = True
         elif part_num == 6:
             # Antenna
-            # depends on head
-            head_qty = robot[5]
-            if head_qty > 0:
-                rv = True
+            # PERFORM CHECKS, IF THEY PASS, THEN
+                # rv = True
+        elif part_num == 7:
+            # Power cell (7)
+            # PERFORM CHECKS, IF THEY PASS, THEN
+                # rv = True
     return rv
 
 
@@ -138,9 +135,11 @@ def mk_robot():
     print( f"Finally, a completed robot. Only took {roll_count} rolls." )
     print_robot( robot )
     print()
-     
+
 
 def print_robot( robot ):
+    ''' Print robot part names and qtys
+    '''
     for i in ( 1, 2, 3, 4, 5, 6, 7 ):
         print( f"{part_names[i]}: {robot[i]}" )
 
