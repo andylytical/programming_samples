@@ -69,26 +69,19 @@ def can_add_part( part_num, robot ):
             num_wheels = robot[1]
             if num_wheels > part_count:
                 rv = True
-        elif part_num == 3:
-            # Torso
-            # can be added once all axles are present
-            num_axles = robot[2]
-            req_axles = part_count_max[2]
-            if num_axles == req_axles:
-                rv = True
-        elif part_num == 4 or part_num == 5 or part_num == 7:
-            # Plunger (4)
-            # Head (5)
-            # Power cell (7)
-            # depends on torso
-            torso_qty = robot[3]
-            if torso_qty > 0:
-                rv = True
-        elif part_num == 6:
-            # Antenna
-            # depends on head
-            head_qty = robot[5]
-            if head_qty > 0:
+        else:
+            # all the other parts have the same rules,
+            # dependant part must be at max qty
+            depends_on = 3 # Plunger (4) Head (5) Power cell (7)
+            if part_num == 3: 
+                # Torso
+                depends_on = 2
+            elif part_num == 6:
+                # Antenna
+                depends_on = 5
+            dep_qty = robot[depends_on]
+            dep_required = part_count_max[depends_on]
+            if dep_qty == dep_required:
                 rv = True
     return rv
 
