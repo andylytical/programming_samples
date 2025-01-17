@@ -4,30 +4,63 @@ import random
 ###
 #  GLOBAL VARS
 ###
-# Array of part names, indexable by interger from a 7-sided dice roll
-part_names = [
-    'ERROR',     #0 <-- array index, 0th index will never be used
-    'Wheel',     #1
-    'Axle',      #2
-    'Torso',     #3
-    'Plunger',   #4
-    'Head',      #5
-    'Antenna',   #6
-    'Powercell', #7
-    ]
+# Dictionary of parts and relationships
+robot_parts = {
+    1: { 'name': 'Wheel',      'max': 3, 'depends_on': 0, 'dependency_relation': False },
+    2: { 'name': 'Axle',       'max': 3, 'depends_on': 1, 'dependency_relation': int.__lt__ },
+    3: { 'name': 'Torso',      'max': 1, 'depends_on': 2, 'dependency_relation': int.__eq__ },
+    4: { 'name': 'Plunger',    'max': 1, 'depends_on': 3, 'dependency_relation': int.__eq__ },
+    5: { 'name': 'Head',       'max': 1, 'depends_on': 3, 'dependency_relation': int.__eq__ },
+    6: { 'name': 'Antenna',    'max': 2, 'depends_on': 5, 'dependency_relation': int.__eq__ },
+    7: { 'name': 'Power Cell', 'max': 4, 'depends_on': 3, 'dependency_relation': int.__eq__ },
+}
+# # Array of part names, indexable by interger from a 7-sided dice roll
+# part_names = [
+#     'ERROR',     #0 <-- array index, 0th index will never be used
+#     'Wheel',     #1
+#     'Axle',      #2
+#     'Torso',     #3
+#     'Plunger',   #4
+#     'Head',      #5
+#     'Antenna',   #6
+#     'Powercell', #7
+#     ]
 
-# Required part quantities for a full robot
-part_count_max = [
-    0, #0 <-- array index number, 0th index will never be used
-    3, #1 (3 wheels)
-    3, #2 (3 axles)
-    1, #3 (1 torso)
-    1, #4 (1 plunger)
-    1, #5 (1 head)
-    2, #6 (2 antennae)
-    4, #7 (4 powercells)
-    ]
+# # Required part quantities for a full robot
+# part_count_max = [
+#     0, #0 <-- array index number, 0th index will never be used
+#     3, #1 (3 wheels)
+#     3, #2 (3 axles)
+#     1, #3 (1 torso)
+#     1, #4 (1 plunger)
+#     1, #5 (1 head)
+#     2, #6 (2 antennae)
+#     4, #7 (4 powercells)
+#     ]
 
+# # dependent part
+# part_depends_on = [ 
+#     0, #0 <-- array index number, 0th index will never be used
+#     0, #1 wheel does not depend on anything
+#     1, #2 axle depends on wheel
+#     2, #3 torso depends on axle
+#     3, #4 plunger requires a torso
+#     3, #5 head requires a torso
+#     5, #6 antenna requires a head
+#     3, #7 powercell requires a torso
+#     ]
+
+# # dependant part operation
+# part_dependency_operation = [
+#     0, #0 <-- array index number, 0th index will never be used
+#     0, #1 wheel 
+#     1, #2 axle depends on wheel
+#     2, #3 torso depends on axle
+#     3, #4 plunger requires a torso
+#     3, #5 head requires a torso
+#     5, #6 antenna requires a head
+#     3, #7 powercell requires a torso
+# ]
 
 ###
 #  FUNCTIONS
@@ -38,34 +71,38 @@ def d7():
     return random.randint( 1, 7 )
 
 
-def can_add_part( part_num, robot ):
-    ''' Determine if the requested part can be added to this robot
+def can_add_part( part_num, thBot ):
+    ''' Determine if the requested part can be added to this thBot
         INPUT
         part_num: int, the index of the part to be added
                   (comes from random dice roll)
-        robot: array, the quantity of parts added so far
+        thBot: array, the quantity of parts added so far
                (position in the array indicates the part type)
         OUTPUT
         bool: True if part can be added, False otherwise
     '''
     rv = False # return value, to be returned at the end of the function
 
-    # number of parts of this type so far
-    part_count = robot[ part_num ]
+    # number of parts for this type so far
+    part_count = thBot[ part_num ]
     # max quantity allowed for this type of part
-    max_allowed = part_count_max[ part_num ]
+    max_allowed = robot_parts[ part_num ][ 'max' ]
     
     # Detemine if the part is able to be added at this time
-    # First test for every part will always be if max_allowed has been reached yet
+    # The first test for every part will always be if max_allowed has been reached yet
     if part_count < max_allowed:
         # Now check part type for any additional rules
+        dep_index = robot_parts[ part_num ][ 'depends_on' ]
+        dep_count = thBot[ dep_index ]
+        dep_required = robot_parts[ dep_index ][ 'max' ]
+        dep_relationship = robot_parts[ dep_index ][ 'dependency_relation' ]
+        if dep_count == dep_required
+        # part count has "relationship" to dep_count
+        if dep_relationship( part_count, dep_count ):
         if part_num == 2:
-            # Axle
-            # must be a free wheel (ie: more wheels than axles)
-            dep_index = 1
-            dep_qty = robot[dep_index]
-            if dep_qty > part_count:
-                rv = True
+            # To add an axle, there must be a free wheel (ie: more wheels than axles)
+            dep_count = thBot[dep_index]
+
         else:
             # all the other parts have the same rules,
             # dependant part must be at max qty
@@ -76,9 +113,9 @@ def can_add_part( part_num, robot ):
                 dep_index = 2
             elif part_num == 6: # Antenna
                 dep_index = 5
-            dep_qty = robot[dep_index]
+            dep_count = thBot[dep_index]
             dep_required = part_count_max[dep_index]
-            if dep_qty == dep_required:
+            if dep_count == dep_required:
                 rv = True
     return rv
 
